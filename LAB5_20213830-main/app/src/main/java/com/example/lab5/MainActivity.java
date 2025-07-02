@@ -68,12 +68,11 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
 
-        // Login anónimo antes de cualquier acción de Storage
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             FirebaseAuth.getInstance().signInAnonymously()
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            // ¡Ya tienes usuario anónimo!
+
                         } else {
                             Toast.makeText(this, "Error al autenticar con Firebase", Toast.LENGTH_SHORT).show();
                         }
@@ -90,14 +89,7 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
             }
         }
-/*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
-                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                startActivity(intent); // Esto abre el diálogo para que el usuario apruebe
-            }
-        }*/
+
 
 
         // Mostramos saludo y mensaje guardado

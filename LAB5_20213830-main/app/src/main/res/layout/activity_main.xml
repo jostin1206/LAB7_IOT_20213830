@@ -82,7 +82,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnVerHabitos" />
 
-    <!-- NUEVO: Subida y descarga de fotos para Laboratorio 7 -->
+    <!-- Subida y descarga de fotos para Laboratorio 7 -->
 
     <!-- Botón para seleccionar y subir imagen -->
     <Button
@@ -95,7 +95,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Mostrar link de descarga (inicialmente invisible) -->
+    <!-- Mostramos link de descarga  -->
     <TextView
         android:id="@+id/tvLinkImagen"
         android:layout_width="0dp"
