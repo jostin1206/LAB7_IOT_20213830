@@ -13,6 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -25,7 +30,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.lab5.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_MSG = "mensaje_motivacional";
     private static final String IMAGE_FILENAME = "imagen_perfil.png";
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
+
+    private CloudStorage cloudStorage;
+
+    private Button btnSeleccionarImagen, btnDescargarImagen;
+    private TextView tvLinkImagen;
+    private EditText etNombreDescarga;
+    private ImageView ivImagenDescargada;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +66,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+
+        // Login anónimo antes de cualquier acción de Storage
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            FirebaseAuth.getInstance().signInAnonymously()
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // ¡Ya tienes usuario anónimo!
+                        } else {
+                            Toast.makeText(this, "Error al autenticar con Firebase", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
 
        // aqui se pide permiso de notificaciones (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -113,8 +144,40 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        // Inicializan CloudStorage
+        //cloudStorage = new CloudStorage();
+        cloudStorage = new CloudStorage(this);
 
+// Vinculan los nuevos botones y vistas
+        btnSeleccionarImagen = binding.btnSeleccionarImagen;
+        btnDescargarImagen = binding.btnDescargarImagen;
+        tvLinkImagen = binding.tvLinkImagen;
+        etNombreDescarga = binding.etNombreDescarga;
+        ivImagenDescargada = binding.ivImagenDescargada;
+        btnSeleccionarImagen.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), PICK_IMAGE_REQUEST);
+        });
 
+        btnDescargarImagen.setOnClickListener(v -> {
+            String nombreArchivo = etNombreDescarga.getText().toString().trim();
+            if (nombreArchivo.isEmpty()) {
+                Toast.makeText(this, "Ingresa el nombre de la imagen", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            cloudStorage.obtenerArchivo(
+                    nombreArchivo,
+                    uri -> {
+                        // Usa Glide para cargar la imagen en ivImagenDescargada
+                        Glide.with(this).load(uri).into(ivImagenDescargada);
+                        Toast.makeText(this, "Imagen descargada correctamente", Toast.LENGTH_SHORT).show();
+                    },
+                    e -> Toast.makeText(this, "Error al descargar imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+            );
+        });
 
     }
 
@@ -154,5 +217,26 @@ public class MainActivity extends AppCompatActivity {
     private void abrirGaleria() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         launcherImagen.launch(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            String nombreArchivo = "foto_" + System.currentTimeMillis() + ".jpg";
+            cloudStorage.guardarArchivo(
+                    imageUri,
+                    nombreArchivo,
+                    uri -> {
+                        //tvLinkImagen.setText("Link: " + uri.toString());
+                        tvLinkImagen.setText("Imagen subida: " + nombreArchivo);
+                        tvLinkImagen.setVisibility(View.VISIBLE);
+                        Toast.makeText(this, "Imagen subida correctamente", Toast.LENGTH_SHORT).show();
+                    },
+                    e -> Toast.makeText(this, "Error al subir imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+            );
+        }
     }
 }

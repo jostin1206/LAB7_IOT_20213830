@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -19,14 +20,14 @@
         android:id="@+id/imagePerfil"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:clickable="true"
         android:contentDescription="Imagen de perfil"
         android:focusable="true"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,7 +82,84 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnVerHabitos" />
 
+    <!-- NUEVO: Subida y descarga de fotos para Laboratorio 7 -->
 
+    <!-- Botón para seleccionar y subir imagen -->
+    <Button
+        android:id="@+id/btnSeleccionarImagen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Seleccionar y Subir Foto"
+        app:layout_constraintTop_toBottomOf="@id/btnConfiguraciones"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Mostrar link de descarga (inicialmente invisible) -->
+    <TextView
+        android:id="@+id/tvLinkImagen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Link de la imagen aparecerá aquí"
+        android:visibility="gone"
+        android:textIsSelectable="true"
+        app:layout_constraintTop_toBottomOf="@id/btnSeleccionarImagen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Campo para ingresar nombre de imagen a descargar -->
+    <EditText
+        android:id="@+id/etNombreDescarga"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre de la imagen a descargar (nombre.jpg)"
+        app:layout_constraintTop_toBottomOf="@id/tvLinkImagen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Botón para descargar imagen -->
+
+    <!-- Imagen descargada -->
+    <Button
+        android:id="@+id/btnDescargarImagen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Descargar Foto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etNombreDescarga" />
+
+    <ImageView
+        android:id="@+id/ivImagenDescargada"
+        android:layout_width="383dp"
+        android:layout_height="404dp"
+        android:background="#EEE"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imagePerfil"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="271dp"
+        android:layout_height="51dp"
+        android:text="LABORATORIO 7"
+        android:textColor="#0288D1"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDescargarImagen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
     <!--
     <Button
         android:id="@+id/btnProbarNotificacion"
